@@ -1,0 +1,111 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // --- 1. DOM 요소 가져오기 ---
+  const faqList = document.getElementById('faq-list');
+
+  // --- 2. 상태 변수 정의 ---
+  const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+
+  // --- 3. 텍스트 서식 변환 함수 ---
+  /**
+   * 텍스트 라인에 포함된 커스텀 태그와 URL을 HTML로 변환합니다.
+   * @param {string} text - 변환할 원본 텍스트
+   * @param {boolean} isParagraph - 결과를 <p> 태그로 감쌀지 여부
+   * @returns {string} - 변환된 HTML 문자열
+   */
+  function formatTextToHtml(text, isParagraph = true) {
+    let html = text.toString().trim();
+
+    if (html.startsWith('https://lh3.googleusercontent.com/d/')) {
+      return `<p><img src="${html}" style="max-width:100%; border-radius:8px; margin:10px 0;" alt="관련 이미지"></p>`;
+    }
+    
+    html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    html = html.replace(/\n/g, '<br>');
+
+    // 커스텀 태그를 HTML 태그로 변환합니다.
+    html = html
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[color=(.*?)\](.*?)\[\/color\]/g, '<span style="color:$1;">$2</span>')
+      .replace(/\[size=(.*?)\](.*?)\[\/size\]/g, '<span style="font-size:$1;">$2</span>')
+      // [추가] 글꼴 변경 태그를 처리합니다.
+      .replace(/\[font=(.*?)\](.*?)\[\/font\]/g, '<span style="font-family:\'$1\';">$2</span>')
+      .replace(/\[highlight\](.*?)\[\/highlight\]/g, '<span class="highlight">$1</span>');
+
+    const urlRegex = /(https?:\/\/[^\s"<>]+)/g;
+    html = html.replace(urlRegex, '<a class="content-link" href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    if (isParagraph) {
+      return `<p>${html}</p>`;
+    }
+    return html;
+  }
+
+  // --- 4. 앱 초기화 및 FAQ 목록 생성 ---
+  function initializeApp() {
+    google.script.run
+      .withSuccessHandler(populateFaqs)
+      .withFailureHandler(showError)
+      .getFaqData();
+  }
+
+  function populateFaqs(faqData) {
+    faqList.innerHTML = '';
+    if (!faqData || faqData.length === 0) {
+      faqList.innerHTML = '<p>질문 목록을 불러오는 데 실패했습니다.</p>';
+      return;
+    }
+    
+    faqData.forEach(item => {
+      const faqItem = document.createElement('div');
+      faqItem.className = 'faq-item';
+
+      const questionHtml = formatTextToHtml(item.question, false);
+      const answerHtml = item.answers.map(line => formatTextToHtml(line, true)).join('');
+
+      faqItem.innerHTML = `
+        <div class="faq-question">${questionHtml}</div>
+        <div class="faq-answer">${answerHtml}</div>
+      `;
+      faqList.appendChild(faqItem);
+    });
+
+    // 아코디언 토글 이벤트 리스너 추가
+    document.querySelectorAll('.faq-question').forEach(questionEl => {
+      questionEl.addEventListener('click', (e) => {
+        const faqItem = e.currentTarget.parentElement;
+        const answerEl = faqItem.querySelector('.faq-answer');
+
+        if (faqItem.classList.contains('active')) {
+          faqItem.classList.remove('active');
+          answerEl.style.maxHeight = null;
+        } else {
+          document.querySelectorAll('.faq-item.active').forEach(activeItem => {
+              activeItem.classList.remove('active');
+              activeItem.querySelector('.faq-answer').style.maxHeight = null;
+          });
+
+          faqItem.classList.add('active');
+          answerEl.style.maxHeight = answerEl.scrollHeight + 'px';
+          
+          setTimeout(() => {
+            faqItem.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 500); 
+
+          google.script.run.logUsage(userId, 'FAQ 클릭', faqItem.querySelector('.faq-question').textContent, '데이터베이스');
+        }
+      });
+    });
+  }
+
+  function showError(error) {
+    faqList.innerHTML = `<p>오류가 발생했습니다: ${error.message}. 페이지를 새로고침 해주세요.</p>`;
+  }
+
+  // --- 앱 시작 ---
+  initializeApp();
+});
+</script>

@@ -1,0 +1,9 @@
+# Root ignores
+.DS_Store
+Thumbs.db
+node_modules/
+.env
+.env.local
+*.log
+dist/
+coverage/
