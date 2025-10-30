@@ -1,4 +1,4 @@
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL = resolveApiBaseUrl();
 
 const sampleFaqs = [
   {
@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
 
   function initializeApp() {
-    if (window.location.protocol === 'file:' && !window.API_BASE_URL) {
-      console.info('로컬 파일로 열려 있어 샘플 데이터를 사용합니다.');
+    if (!API_BASE_URL) {
+      console.info('API 주소가 설정되지 않아 샘플 데이터를 사용합니다.');
       populateFaqs(sampleFaqs, true);
       return;
     }
@@ -139,6 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function logUsage(payload) {
+    if (!API_BASE_URL) {
+      return;
+    }
+
     fetch(`${API_BASE_URL}/api/logs`, {
       method: 'POST',
       headers: {
@@ -187,4 +191,20 @@ function formatTextToHtml(text, isParagraph = true) {
   }
 
   return html;
+}
+
+function resolveApiBaseUrl() {
+  if (typeof window.API_BASE_URL === 'string' && window.API_BASE_URL.trim().length > 0) {
+    return window.API_BASE_URL.trim().replace(/\/$/, '');
+  }
+
+  if (window.location.protocol === 'file:' || window.location.hostname.endsWith('.github.io')) {
+    return null;
+  }
+
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
+
+  return null;
 }

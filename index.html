@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>재맞고 이용안내</title>
-  <!-- 구글 폰트 및 스타일시트 포함 -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-  <?!= include('style'); ?>
-</head>
-<body>
-
-  <!-- FAQ 화면 -->
-  <div id="faq-container" class="container">
-    <header class="app-header">
-      <h1>재맞고 이용안내</h1>
-    </header>
-    <main id="faq-list" class="faq-main">
-      <!-- FAQ 데이터 로딩 전 표시될 로더 -->
-      <div class="loader-wrapper">
-        <div class="loader"></div>
-        <p>자주 묻는 질문을 불러오는 중...</p>
-      </div>
-    </main>
-  </div>
-
-  <!-- 자바스크립트 파일 포함 -->
-  <?!= include('script'); ?>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0; url=frontend/index.html" />
+    <title>재맞고 FAQ 안내</title>
+    <style>
+      body {
+        font-family: 'Noto Sans KR', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f4f6f8;
+        color: #333;
+      }
+      .message {
+        text-align: center;
+      }
+      .message a {
+        color: #005a9c;
+        text-decoration: underline;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="message">
+      <p>재맞고 FAQ 페이지로 이동 중입니다...</p>
+      <p><a href="frontend/index.html">자동으로 이동하지 않으면 여기를 클릭하세요.</a></p>
+    </div>
+  </body>
 </html>
