@@ -1,4 +1,7 @@
 const API_BASE_URL = resolveApiBaseUrl();
+const SHEET_ID = '1yH51YyNJu-L5HUYriCyHdezZGPFNZf5-sJPG6crqQvQ';
+const SHEET_NAME = '데이터베이스';
+const SHEET_RANGE = 'A1:N60';
 
 const sampleFaqs = [
   {
@@ -27,15 +30,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initializeApp() {
     if (!API_BASE_URL) {
-      console.info('API 주소가 설정되지 않아 샘플 데이터를 사용합니다.');
-      populateFaqs(sampleFaqs, true);
+      fetchFaqsFromSheet()
+        .then((data) => {
+          if (isRendered) {
+            return;
+          }
+          populateFaqs(data, false, true);
+        })
+        .catch((error) => {
+          if (isRendered) {
+            return;
+          }
+          console.warn('시트 직접 호출 실패, 샘플 데이터를 표시합니다.', error);
+          populateFaqs(sampleFaqs, true, true);
+        });
       return;
     }
 
     const fallbackTimer = setTimeout(() => {
       if (!isRendered) {
         console.warn('API 응답이 없어 샘플 데이터로 대체합니다.');
-        populateFaqs(sampleFaqs, true);
+        populateFaqs(sampleFaqs, true, false);
       }
     }, 4000);
 
@@ -46,19 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         clearTimeout(fallbackTimer);
-        populateFaqs(data, false);
+        populateFaqs(data, false, false);
       })
       .catch((error) => {
         if (isRendered) {
           return;
         }
         clearTimeout(fallbackTimer);
-        console.warn('API 호출 실패, 샘플 데이터로 대체합니다.', error);
-        populateFaqs(sampleFaqs, true);
+        console.warn('API 호출 실패, 샘플 데이터를 대체로 사용합니다.', error);
+        populateFaqs(sampleFaqs, true, false);
       });
   }
 
-  function populateFaqs(faqData, isSample) {
+  function populateFaqs(faqData, isSample, isDirectSheet) {
     if (isRendered) {
       return;
     }
@@ -98,7 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const info = document.createElement('p');
       info.style.marginTop = '20px';
       info.style.color = '#666';
-      info.textContent = '현재는 샘플 데이터로 표시 중입니다. 서버를 실행하면 실제 스프레드시트 데이터를 불러옵니다.';
+      info.textContent = isDirectSheet
+        ? '스프레드시트 데이터를 불러오지 못해 샘플 데이터를 표시합니다.'
+        : '현재는 샘플 데이터로 표시 중입니다. 서버를 실행하면 실제 스프레드시트 데이터를 불러옵니다.';
+      faqList.appendChild(info);
+    } else if (isDirectSheet) {
+      const info = document.createElement('p');
+      info.style.marginTop = '20px';
+      info.style.color = '#666';
+      info.textContent = 'Google 스프레드시트에서 직접 불러온 FAQ입니다.';
       faqList.appendChild(info);
     }
   }
@@ -207,4 +230,107 @@ function resolveApiBaseUrl() {
   }
 
   return null;
+}
+
+function fetchFaqsFromSheet() {
+  if (typeof document === 'undefined') {
+    return Promise.reject(new Error('문서 환경이 아닙니다.'));
+  }
+
+  const url = new URL(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`);
+  url.searchParams.set('tqx', 'out:json');
+  url.searchParams.set('sheet', SHEET_NAME);
+  url.searchParams.set('range', SHEET_RANGE);
+
+  return new Promise((resolve, reject) => {
+    const google = (window.google = window.google || {});
+    const visualization = (google.visualization = google.visualization || {});
+    const Query = (visualization.Query = visualization.Query || {});
+
+    const previousHandler = Query.setResponse;
+
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      reject(new Error('스프레드시트 응답 시간이 초과되었습니다.'));
+    }, 8000);
+
+    Query.setResponse = (response) => {
+      cleanup();
+
+      if (!response || response.status !== 'ok') {
+        const message = response && response.errors && response.errors.length > 0 ? response.errors[0].detailed_message : '스프레드시트 응답이 올바르지 않습니다.';
+        reject(new Error(message));
+        return;
+      }
+
+      try {
+        const matrix = parseGvizTable(response.table);
+        const faqs = transpose(matrix)
+          .filter((column) => column[0])
+          .map((column) => {
+            const [question, ...answers] = column;
+            return {
+              question,
+              answers: answers.filter((answer) => answer && answer.toString().trim() !== ''),
+            };
+          });
+
+        resolve(faqs);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    const script = document.createElement('script');
+    script.src = url.toString();
+    script.async = true;
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('스프레드시트 데이터를 불러오는 중 오류가 발생했습니다.'));
+    };
+
+    document.head.appendChild(script);
+
+    function cleanup() {
+      clearTimeout(timeoutId);
+      script.remove();
+      if (previousHandler) {
+        Query.setResponse = previousHandler;
+      } else {
+        delete Query.setResponse;
+      }
+    }
+  });
+}
+
+function parseGvizTable(table) {
+  const colsLength = table.cols.length;
+
+  return table.rows.map((row) => {
+    const cells = row.c || [];
+    const values = new Array(colsLength);
+    for (let i = 0; i < colsLength; i += 1) {
+      const cell = cells[i];
+      values[i] = cell && cell.v !== null ? cell.v : '';
+    }
+    return values;
+  });
+}
+
+function transpose(matrix) {
+  if (!matrix || matrix.length === 0) {
+    return [];
+  }
+  const rowLength = Math.max(...matrix.map((row) => row.length));
+  const result = [];
+
+  for (let col = 0; col < rowLength; col += 1) {
+    const column = [];
+    for (let row = 0; row < matrix.length; row += 1) {
+      column.push(matrix[row][col] ?? '');
+    }
+    result.push(column);
+  }
+
+  return result;
 }
