@@ -438,6 +438,11 @@ a {
     background-color: rgba(255, 255, 255, 0.02);
   }
 
+  .faq-answer .highlight {
+    background-color: rgba(243, 206, 164, 0.85);
+    color: #201910;
+  }
+
   .site-footer {
     background-color: #151515;
   }
