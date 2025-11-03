@@ -6,21 +6,64 @@
   <title>재맞고 이용 안내</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="faq-container" class="container">
-    <header class="app-header">
-      <h1>재맞고 이용 안내</h1>
+  <div class="page">
+    <header class="site-header">
+      <nav class="site-nav">
+        <div class="brand">
+          <span class="brand-mark">JM</span>
+          <span class="brand-text">JaeMatGo</span>
+        </div>
+        <div class="nav-links">
+          <a href="#faq-section">FAQ</a>
+          <a href="mailto:help@jaematgo.kr">문의하기</a>
+        </div>
+      </nav>
+      <section class="hero">
+        <div class="hero-content">
+          <p class="hero-eyebrow">Customer Success Guide</p>
+          <h1 class="hero-title">재맞고 이용 안내</h1>
+          <p class="hero-description">
+            재맞고와 함께라면 복잡한 절차 없이도 간편하게 서비스를 이용할 수 있습니다.
+            필요한 모든 안내와 자주 묻는 질문을 한 곳에서 빠르게 찾아보세요.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#faq-section">FAQ 바로가기</a>
+            <a class="secondary-action" href="mailto:help@jaematgo.kr">지원팀 연결</a>
+          </div>
+        </div>
+      </section>
     </header>
-    <main id="faq-list" class="faq-main">
-      <div class="loader-wrapper" id="loader">
-        <div class="loader"></div>
-        <p>FAQ 데이터를 불러오는 중...</p>
-      </div>
+
+    <main class="site-main">
+      <section id="faq-section" class="faq-section">
+        <div class="section-heading">
+          <p class="section-eyebrow">FAQ</p>
+          <h2 class="section-title">자주 묻는 질문</h2>
+          <p class="section-description">
+            아래 질문을 선택하면 자세한 답변과 함께 추가 자료를 확인할 수 있습니다.
+            최신 정보가 반영된 순서대로 정리되어 있습니다.
+          </p>
+        </div>
+
+        <div id="faq-list" class="faq-list">
+          <div class="loader-wrapper" id="loader">
+            <div class="loader"></div>
+            <p>FAQ 데이터를 불러오는 중입니다...</p>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <footer class="site-footer">
+      <p>© 2025 JaeMatGo. All rights reserved.</p>
+      <a href="mailto:help@jaematgo.kr">help@jaematgo.kr</a>
+    </footer>
   </div>
+
   <script src="app.js" type="module"></script>
 </body>
 </html>
