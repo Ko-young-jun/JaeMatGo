@@ -88,7 +88,7 @@ a {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
   font-size: 0.95rem;
 }
 
@@ -110,6 +110,17 @@ a {
 
 .nav-links a:hover::after {
   background-color: var(--color-primary);
+}
+
+.nav-contact {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.nav-contact strong {
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
 .hero {
@@ -154,7 +165,7 @@ a {
 }
 
 .primary-action,
-.secondary-action {
+.hero-contact {
   padding: 14px 28px;
   border-radius: 999px;
   font-size: 0.95rem;
@@ -173,15 +184,17 @@ a {
   box-shadow: 0 16px 28px rgba(31, 31, 31, 0.22);
 }
 
-.secondary-action {
+.hero-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background-color: rgba(255, 255, 255, 0.7);
   color: var(--color-primary);
   border: 1px solid rgba(31, 31, 31, 0.12);
 }
 
-.secondary-action:hover {
-  background-color: var(--color-primary);
-  color: #ffffff;
+.hero-contact strong {
+  font-weight: 600;
 }
 
 .site-main {
@@ -421,13 +434,18 @@ a {
     background: linear-gradient(135deg, #1c1c1c 0%, #161616 40%, #1f1b16 100%);
   }
 
-  .secondary-action {
-    background-color: rgba(255, 255, 255, 0.05);
+  .hero-contact {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
     color: var(--color-primary);
   }
 
-  .secondary-action:hover {
-    background-color: rgba(255, 255, 255, 0.12);
+  .nav-contact {
+    color: var(--color-text-muted);
+  }
+
+  .nav-contact strong {
+    color: var(--color-primary);
   }
 
   .faq-item {
