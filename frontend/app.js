@@ -133,12 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ? '스프레드시트 데이터를 불러오지 못해 샘플 데이터를 표시합니다.'
         : '현재는 샘플 데이터로 표시 중입니다. 서버를 실행하면 실제 스프레드시트 데이터를 불러옵니다.';
       faqList.appendChild(info);
-    } else if (isDirectSheet) {
-      const info = document.createElement('p');
-      info.style.marginTop = '20px';
-      info.style.color = '#666';
-      info.textContent = 'Google 스프레드시트에서 직접 불러온 FAQ입니다.';
-      faqList.appendChild(info);
     }
   }
 
