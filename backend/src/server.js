@@ -94,7 +94,7 @@ app.post('/api/logs', async (req, res, next) => {
 
 app.use(express.static(staticDir));
 
-app.get('*', (_req, res, next) => {
+app.use((_req, res, next) => {
   if (!staticDir) {
     return next();
   }
@@ -111,9 +111,11 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ message: error.message || '서버 오류가 발생했습니다.' });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+}
 
 function transpose(matrix) {
   if (matrix.length === 0) {
@@ -122,3 +124,5 @@ function transpose(matrix) {
   return matrix[0].map((_, columnIndex) => matrix.map((row) => row[columnIndex] || ''));
 }
 const useMockData = process.env.USE_MOCK_DATA === 'true';
+
+module.exports = app;

@@ -25,8 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById('loader');
   const userId = `user_${Math.random().toString(36).slice(2, 11)}`;
   let isRendered = false;
+  let allFaqs = [];
 
   initializeApp();
+
+  const searchInput = document.getElementById('faq-search-input');
+  searchInput.addEventListener('input', (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    const filteredFaqs = allFaqs.filter(faq => {
+      const question = faq.question.toLowerCase();
+      const answers = faq.answers.join(' ').toLowerCase();
+      return question.includes(searchTerm) || answers.includes(searchTerm);
+    });
+    populateFaqs(filteredFaqs, false, false, true);
+  });
 
   function initializeApp() {
     if (!API_BASE_URL) {
@@ -35,14 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (isRendered) {
             return;
           }
-          populateFaqs(data, false, true);
+          populateFaqs(data, false, true, false);
         })
         .catch((error) => {
           if (isRendered) {
             return;
           }
           console.warn('시트 직접 호출 실패, 샘플 데이터를 표시합니다.', error);
-          populateFaqs(sampleFaqs, true, true);
+          populateFaqs(sampleFaqs, true, true, false);
         });
       return;
     }
@@ -61,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         clearTimeout(fallbackTimer);
-        populateFaqs(data, false, false);
+        populateFaqs(data, false, false, false);
       })
       .catch((error) => {
         if (isRendered) {
@@ -69,12 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         clearTimeout(fallbackTimer);
         console.warn('API 호출 실패, 샘플 데이터를 대체로 사용합니다.', error);
-        populateFaqs(sampleFaqs, true, false);
+        populateFaqs(sampleFaqs, true, false, false);
       });
   }
 
-  function populateFaqs(faqData, isSample, isDirectSheet) {
-    if (isRendered) {
+  function populateFaqs(faqData, isSample, isDirectSheet, isFiltering = false) {
+    if (!isFiltering) {
+      allFaqs = faqData;
+    }
+
+    if (isRendered && !isFiltering) {
       return;
     }
     isRendered = true;
