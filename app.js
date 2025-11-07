@@ -203,7 +203,8 @@ function formatTextToHtml(text, isParagraph = true) {
   let html = (text ?? '').toString().trim();
 
   if (html.startsWith('https://lh3.googleusercontent.com/d/')) {
-    return `<p><img src="${html}" style="max-width:100%; border-radius:8px; margin:10px 0;" alt="첨부 이미지"></p>`;
+    const highQualityUrl = html.split('=')[0] + '=s0';
+    return `<p><img src="${highQualityUrl}" style="max-width:100%; border-radius:8px; margin:10px 0;" alt="첨부 이미지"></p>`;
   }
 
   html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
