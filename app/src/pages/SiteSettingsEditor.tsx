@@ -12,8 +12,13 @@ export const SiteSettingsEditor = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState<SiteSettings>({
+        brandTitle: '',
+        brandSubtitle: '',
+        heroEyebrow: '',
         heroTitle: '',
         heroDescription: '',
+        heroPanelTitle: '',
+        heroPanelItems: [],
         faqSectionTitle: '',
         faqSectionDescription: '',
         phoneNumber: '',
@@ -73,6 +78,26 @@ export const SiteSettingsEditor = () => {
         setSettings({ ...settings, links: newLinks });
     };
 
+    const addPanelItem = () => {
+        setSettings({
+            ...settings,
+            heroPanelItems: [...settings.heroPanelItems, '']
+        });
+    };
+
+    const removePanelItem = (index: number) => {
+        setSettings({
+            ...settings,
+            heroPanelItems: settings.heroPanelItems.filter((_, i) => i !== index)
+        });
+    };
+
+    const updatePanelItem = (index: number, value: string) => {
+        const next = [...settings.heroPanelItems];
+        next[index] = value;
+        setSettings({ ...settings, heroPanelItems: next });
+    };
+
     if (loading) {
         return <div className="settings-loading">로딩 중...</div>;
     }
@@ -91,6 +116,46 @@ export const SiteSettingsEditor = () => {
 
             <main className="settings-main">
                 <div className="settings-form">
+                    <section className="settings-section">
+                        <h2>상단 브랜딩</h2>
+
+                        <div className="form-group">
+                            <label htmlFor="brandTitle">브랜드 제목</label>
+                            <input
+                                id="brandTitle"
+                                type="text"
+                                value={settings.brandTitle}
+                                onChange={(e) => setSettings({ ...settings, brandTitle: e.target.value })}
+                                placeholder="원광대학교 재학생맞춤형고용서비스"
+                                className="form-input"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="brandSubtitle">브랜드 부제</label>
+                            <input
+                                id="brandSubtitle"
+                                type="text"
+                                value={settings.brandSubtitle}
+                                onChange={(e) => setSettings({ ...settings, brandSubtitle: e.target.value })}
+                                placeholder="학생 안내 FAQ 플랫폼"
+                                className="form-input"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="heroEyebrow">히어로 배지 문구</label>
+                            <input
+                                id="heroEyebrow"
+                                type="text"
+                                value={settings.heroEyebrow}
+                                onChange={(e) => setSettings({ ...settings, heroEyebrow: e.target.value })}
+                                placeholder="REJEMATGO FAQ GUIDE"
+                                className="form-input"
+                            />
+                        </div>
+                    </section>
+
                     <section className="settings-section">
                         <h2>Hero 섹션</h2>
 
@@ -117,6 +182,48 @@ export const SiteSettingsEditor = () => {
                                 rows={3}
                             />
                         </div>
+                    </section>
+
+                    <section className="settings-section">
+                        <div className="section-header-row">
+                            <h2>오른쪽 포인트 카드</h2>
+                            <button type="button" onClick={addPanelItem} className="add-link-btn">
+                                <Plus size={18} />
+                                항목 추가
+                            </button>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="heroPanelTitle">카드 제목</label>
+                            <input
+                                id="heroPanelTitle"
+                                type="text"
+                                value={settings.heroPanelTitle}
+                                onChange={(e) => setSettings({ ...settings, heroPanelTitle: e.target.value })}
+                                placeholder="학생용 읽기 최적화 포인트"
+                                className="form-input"
+                            />
+                        </div>
+
+                        {settings.heroPanelItems.map((item, index) => (
+                            <div key={index} className="link-row">
+                                <input
+                                    type="text"
+                                    value={item}
+                                    onChange={(e) => updatePanelItem(index, e.target.value)}
+                                    placeholder="카드 항목 문구"
+                                    className="form-input link-url"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removePanelItem(index)}
+                                    className="remove-link-btn"
+                                    aria-label={`카드 항목 ${index + 1} 삭제`}
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
+                        ))}
                     </section>
 
                     <section className="settings-section">

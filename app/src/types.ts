@@ -40,8 +40,13 @@ export interface LogEntry {
 }
 
 export interface SiteSettings {
+    brandTitle: string;
+    brandSubtitle: string;
+    heroEyebrow: string;
     heroTitle: string;
     heroDescription: string;
+    heroPanelTitle: string;
+    heroPanelItems: string[];
     faqSectionTitle: string;
     faqSectionDescription: string;
     phoneNumber: string;

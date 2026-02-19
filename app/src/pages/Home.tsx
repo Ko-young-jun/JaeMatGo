@@ -50,6 +50,14 @@ export const Home = () => {
     }, [darkMode]);
 
     const categories = [...new Set(faqs.map(f => f.category).filter(Boolean))];
+    const filteredHeroPanelItems = settings?.heroPanelItems?.filter((item) => item.trim().length > 0) ?? [];
+    const heroPanelItems = filteredHeroPanelItems.length > 0
+        ? filteredHeroPanelItems
+        : [
+            '검색 + 카테고리 필터로 질문 접근 시간 단축',
+            '한 번에 하나만 열리는 아코디언으로 집중도 유지',
+            '긴 본문, 이미지, 영상 콘텐츠를 저피로 구조로 배치'
+        ];
 
     const stats = useMemo(() => {
         const totalViews = faqs.reduce((acc, faq) => acc + (faq.clickCount || 0), 0);
@@ -78,10 +86,10 @@ export const Home = () => {
                             </span>
                             <div className="flex flex-col">
                                 <span className="text-sm font-semibold text-[var(--color-text-strong)] md:text-base">
-                                    원광대학교 재학생맞춤형고용서비스
+                                    {settings?.brandTitle || '원광대학교 재학생맞춤형고용서비스'}
                                 </span>
                                 <span className="text-xs text-[var(--color-text-muted)]">
-                                    학생 안내 FAQ 플랫폼
+                                    {settings?.brandSubtitle || '학생 안내 FAQ 플랫폼'}
                                 </span>
                             </div>
                         </div>
@@ -126,7 +134,7 @@ export const Home = () => {
                     <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
                         <div>
                             <div className="mb-3 inline-flex items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-xs font-semibold tracking-[0.12em] text-[var(--color-text-muted)]">
-                                REJEMATGO FAQ GUIDE
+                                {settings?.heroEyebrow || 'REJEMATGO FAQ GUIDE'}
                             </div>
 
                             <h1
@@ -170,18 +178,17 @@ export const Home = () => {
                         <aside className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
                             <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-[var(--color-text-strong)]">
                                 <GraduationCap size={18} className="text-[var(--color-primary)]" />
-                                학생용 읽기 최적화 포인트
+                                {settings?.heroPanelTitle || '학생용 읽기 최적화 포인트'}
                             </div>
                             <ul className="space-y-3 text-sm leading-6 text-[var(--color-text-muted)]">
-                                <li className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2">
-                                    검색 + 카테고리 필터로 질문 접근 시간 단축
-                                </li>
-                                <li className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2">
-                                    한 번에 하나만 열리는 아코디언으로 집중도 유지
-                                </li>
-                                <li className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2">
-                                    긴 본문, 이미지, 영상 콘텐츠를 저피로 구조로 배치
-                                </li>
+                                {heroPanelItems.map((item, index) => (
+                                    <li
+                                        key={`${item}-${index}`}
+                                        className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2"
+                                    >
+                                        {item}
+                                    </li>
+                                ))}
                             </ul>
                         </aside>
                     </section>

@@ -109,8 +109,17 @@ export const logFAQClick = async (faqId: string): Promise<void> => {
 
 // Site Settings Operations
 const DEFAULT_SETTINGS: SiteSettings = {
-    heroTitle: '재맞고 이용 안내',
-    heroDescription: '재맞고와 함께라면 복잡한 절차 없이도 간편하게 서비스를 이용할 수 있습니다. 필요한 모든 안내와 자주 묻는 질문을 한 곳에서 빠르게 찾아보세요.',
+    brandTitle: '원광대학교 재학생맞춤형고용서비스',
+    brandSubtitle: '학생 안내 FAQ 플랫폼',
+    heroEyebrow: 'REJEMATGO FAQ GUIDE',
+    heroTitle: '긴 글, 이미지, 영상도 빠르게 찾고 편하게 읽으세요.',
+    heroDescription: '학생 사용자를 위해 탐색 속도와 가독성을 높였습니다. 키워드 검색, 카테고리 필터, 단일 아코디언으로 필요한 답변을 빠르게 찾을 수 있습니다.',
+    heroPanelTitle: '학생용 읽기 최적화 포인트',
+    heroPanelItems: [
+        '검색 + 카테고리 필터로 질문 접근 시간 단축',
+        '한 번에 하나만 열리는 아코디언으로 집중도 유지',
+        '긴 본문, 이미지, 영상 콘텐츠를 저피로 구조로 배치'
+    ],
     faqSectionTitle: '자주 묻는 질문',
     faqSectionDescription: '아래 질문을 선택하면 자세한 답변과 함께 추가 자료를 확인할 수 있습니다.',
     phoneNumber: '063-850-7571',
@@ -121,11 +130,61 @@ const DEFAULT_SETTINGS: SiteSettings = {
     ]
 };
 
+const normalizeLinks = (links: unknown): SiteSettings['links'] => {
+    if (!Array.isArray(links)) return DEFAULT_SETTINGS.links;
+
+    const normalized = links
+        .map((link) => {
+            if (!link || typeof link !== 'object') return null;
+            const candidate = link as { label?: unknown; url?: unknown };
+            return {
+                label: typeof candidate.label === 'string' ? candidate.label : '',
+                url: typeof candidate.url === 'string' ? candidate.url : ''
+            };
+        })
+        .filter((link): link is { label: string; url: string } => Boolean(link));
+
+    return normalized.length > 0 ? normalized : DEFAULT_SETTINGS.links;
+};
+
+const normalizePanelItems = (items: unknown): string[] => {
+    if (!Array.isArray(items)) return DEFAULT_SETTINGS.heroPanelItems;
+
+    const normalized = items
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+    return normalized.length > 0 ? normalized : DEFAULT_SETTINGS.heroPanelItems;
+};
+
+const normalizeSiteSettings = (raw: unknown): SiteSettings => {
+    if (!raw || typeof raw !== 'object') {
+        return DEFAULT_SETTINGS;
+    }
+
+    const candidate = raw as Partial<SiteSettings> & Record<string, unknown>;
+
+    return {
+        brandTitle: typeof candidate.brandTitle === 'string' ? candidate.brandTitle : DEFAULT_SETTINGS.brandTitle,
+        brandSubtitle: typeof candidate.brandSubtitle === 'string' ? candidate.brandSubtitle : DEFAULT_SETTINGS.brandSubtitle,
+        heroEyebrow: typeof candidate.heroEyebrow === 'string' ? candidate.heroEyebrow : DEFAULT_SETTINGS.heroEyebrow,
+        heroTitle: typeof candidate.heroTitle === 'string' ? candidate.heroTitle : DEFAULT_SETTINGS.heroTitle,
+        heroDescription: typeof candidate.heroDescription === 'string' ? candidate.heroDescription : DEFAULT_SETTINGS.heroDescription,
+        heroPanelTitle: typeof candidate.heroPanelTitle === 'string' ? candidate.heroPanelTitle : DEFAULT_SETTINGS.heroPanelTitle,
+        heroPanelItems: normalizePanelItems(candidate.heroPanelItems),
+        faqSectionTitle: typeof candidate.faqSectionTitle === 'string' ? candidate.faqSectionTitle : DEFAULT_SETTINGS.faqSectionTitle,
+        faqSectionDescription: typeof candidate.faqSectionDescription === 'string' ? candidate.faqSectionDescription : DEFAULT_SETTINGS.faqSectionDescription,
+        phoneNumber: typeof candidate.phoneNumber === 'string' ? candidate.phoneNumber : DEFAULT_SETTINGS.phoneNumber,
+        links: normalizeLinks(candidate.links)
+    };
+};
+
 export const getSiteSettings = async (): Promise<SiteSettings> => {
     const docRef = doc(db, 'settings', 'site');
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-        return docSnap.data() as SiteSettings;
+        return normalizeSiteSettings(docSnap.data());
     }
     return DEFAULT_SETTINGS;
 };
@@ -133,5 +192,5 @@ export const getSiteSettings = async (): Promise<SiteSettings> => {
 export const updateSiteSettings = async (settings: SiteSettings): Promise<void> => {
     const { setDoc } = await import('firebase/firestore');
     const docRef = doc(db, 'settings', 'site');
-    await setDoc(docRef, settings);
+    await setDoc(docRef, normalizeSiteSettings(settings));
 };
