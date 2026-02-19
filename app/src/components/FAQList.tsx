@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { Search, Filter } from 'lucide-react';
 import type { FAQ } from '../types';
 import { FAQItem } from './FAQItem';
-import './FAQList.css';
 
 interface FAQListProps {
     faqs: FAQ[];
@@ -38,26 +37,29 @@ export const FAQList = ({ faqs, categories }: FAQListProps) => {
     };
 
     return (
-        <div className="faq-list-container">
-            <div className="faq-filters">
-                <div className="search-box">
-                    <Search className="search-icon" size={20} />
+        <div className="flex flex-col gap-5">
+            <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+                <div className="relative">
+                    <Search
+                        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+                        size={18}
+                    />
                     <input
                         type="text"
                         placeholder="질문 또는 키워드를 입력하세요..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
+                        className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] py-3.5 pl-11 pr-4 text-sm text-[var(--color-text)] outline-none transition placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[rgba(242,194,0,0.28)]"
                     />
                 </div>
 
                 {categories.length > 0 && (
-                    <div className="category-filter">
-                        <Filter size={18} />
+                    <div className="flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3">
+                        <Filter size={16} className="text-[var(--color-text-muted)]" />
                         <select
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="category-select"
+                            className="cursor-pointer bg-transparent py-3 text-sm font-medium text-[var(--color-text)] outline-none"
                         >
                             <option value="all">카테고리: 전체</option>
                             {categories.map(cat => (
@@ -68,9 +70,13 @@ export const FAQList = ({ faqs, categories }: FAQListProps) => {
                 )}
             </div>
 
-            <div className="faq-list">
+            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-xs text-[var(--color-text-muted)] md:px-4">
+                총 <strong className="text-[var(--color-text-strong)]">{filteredFAQs.length}</strong>개의 FAQ가 검색되었습니다.
+            </div>
+
+            <div className="flex flex-col gap-3">
                 {filteredFAQs.length === 0 ? (
-                    <div className="empty-state">
+                    <div className="rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-12 text-center text-[var(--color-text-muted)]">
                         <p>검색 결과가 없습니다.</p>
                     </div>
                 ) : (
