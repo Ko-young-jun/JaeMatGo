@@ -54,7 +54,7 @@ export const Home = () => {
                         <button
                             className="theme-toggle"
                             onClick={() => setDarkMode(!darkMode)}
-                            aria-label="Toggle dark mode"
+                            aria-label="다크 모드 전환"
                         >
                             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
@@ -80,11 +80,11 @@ export const Home = () => {
                     <div className="hero-content">
                         <h1
                             className="hero-title"
-                            dangerouslySetInnerHTML={{ __html: settings?.heroTitle || '재맞고 이용 안내' }}
+                            dangerouslySetInnerHTML={{ __html: settings?.heroTitle || '긴 글, 이미지, 영상도 빠르게 찾고 편하게 읽으세요.' }}
                         />
                         <p
                             className="hero-description"
-                            dangerouslySetInnerHTML={{ __html: settings?.heroDescription || '재맞고와 함께라면 복잡한 절차 없이도 간편하게 서비스를 이용할 수 있습니다. 필요한 모든 안내와 자주 묻는 질문을 한 곳에서 빠르게 찾아보세요.' }}
+                            dangerouslySetInnerHTML={{ __html: settings?.heroDescription || '학생 사용자를 위해 탐색 속도와 가독성을 높였습니다. 키워드 검색, 카테고리 필터, 단일 아코디언으로 필요한 답변을 빠르게 찾을 수 있습니다.' }}
                         />
                         <div className="hero-links">
                             {(settings?.links || [
@@ -112,7 +112,7 @@ export const Home = () => {
                         />
                         <p
                             className="section-description"
-                            dangerouslySetInnerHTML={{ __html: settings?.faqSectionDescription || '아래 질문을 선택하면 자세한 답변과 함께 추가 자료를 확인할 수 있습니다.' }}
+                            dangerouslySetInnerHTML={{ __html: settings?.faqSectionDescription || '질문을 선택하면 상세 답변이 열립니다. 긴 본문, 이미지, 영상까지 읽기 쉽게 구성했습니다.' }}
                         />
                     </div>
 

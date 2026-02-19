@@ -14,7 +14,7 @@
 
 .faq-item.active {
   border-color: var(--color-primary);
-  box-shadow: 0 12px 40px rgba(166, 124, 82, 0.15);
+  box-shadow: 0 10px 30px rgba(242, 194, 0, 0.2);
 }
 
 .faq-question {
@@ -112,7 +112,7 @@
 }
 
 .answer-content a:hover {
-  color: var(--color-accent);
+  color: #000000;
 }
 
 .answer-content ul,

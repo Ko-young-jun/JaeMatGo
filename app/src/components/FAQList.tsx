@@ -44,7 +44,7 @@ export const FAQList = ({ faqs, categories }: FAQListProps) => {
                     <Search className="search-icon" size={20} />
                     <input
                         type="text"
-                        placeholder="검색어를 입력하세요..."
+                        placeholder="질문 또는 키워드를 입력하세요..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="search-input"
@@ -59,7 +59,7 @@ export const FAQList = ({ faqs, categories }: FAQListProps) => {
                             onChange={(e) => setSelectedCategory(e.target.value)}
                             className="category-select"
                         >
-                            <option value="all">전체 카테고리</option>
+                            <option value="all">카테고리: 전체</option>
                             {categories.map(cat => (
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}

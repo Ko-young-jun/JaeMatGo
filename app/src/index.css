@@ -36,34 +36,34 @@ video {
 /* CSS Variables - Light Theme (default) */
 :root,
 [data-theme="light"] {
-  --color-background: #f5f2ed;
+  --color-background: #fffdf8;
   --color-surface: #ffffff;
-  --color-surface-hover: #faf8f5;
-  --color-primary: #a67c52;
-  --color-accent: #d5b693;
-  --color-text: #2d2d2d;
-  --color-text-strong: #1a1a1a;
-  --color-text-muted: #6b6b6b;
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-hover: rgba(0, 0, 0, 0.15);
-  --color-highlight: #fdf3e3;
-  --color-header-bg: linear-gradient(135deg, #fdfaf5 0%, #f0ede8 40%, #ebded1 100%);
+  --color-surface-hover: #fff9e6;
+  --color-primary: #f2c200;
+  --color-accent: #111111;
+  --color-text: #111111;
+  --color-text-strong: #111111;
+  --color-text-muted: #555555;
+  --color-border: #e5e5e5;
+  --color-border-hover: #cfcfcf;
+  --color-highlight: #fff4bf;
+  --color-header-bg: linear-gradient(180deg, #fffefb 0%, #fff9e8 100%);
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
-  --color-background: #121212;
-  --color-surface: #1e1e1e;
-  --color-surface-hover: #2a2a2a;
-  --color-primary: #d5a574;
-  --color-accent: #b8956e;
-  --color-text: #e0e0e0;
+  --color-background: #101010;
+  --color-surface: #1b1b1b;
+  --color-surface-hover: #252525;
+  --color-primary: #f2c200;
+  --color-accent: #ffffff;
+  --color-text: #f2f2f2;
   --color-text-strong: #ffffff;
-  --color-text-muted: #a0a0a0;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.15);
-  --color-highlight: rgba(213, 165, 116, 0.2);
-  --color-header-bg: linear-gradient(135deg, #1a1a1a 0%, #151515 40%, #1f1b16 100%);
+  --color-text-muted: #b3b3b3;
+  --color-border: rgba(255, 255, 255, 0.16);
+  --color-border-hover: rgba(255, 255, 255, 0.28);
+  --color-highlight: rgba(242, 194, 0, 0.2);
+  --color-header-bg: linear-gradient(180deg, #171717 0%, #19170f 100%);
 }
 
 /* Smooth theme transition */
