@@ -98,6 +98,18 @@ export const SiteSettingsEditor = () => {
         setSettings({ ...settings, heroPanelItems: next });
     };
 
+    const updatePanelItemsBulk = (value: string) => {
+        const items = value
+            .split('\n')
+            .map((line) => line.trim())
+            .filter((line) => line.length > 0);
+
+        setSettings({
+            ...settings,
+            heroPanelItems: items
+        });
+    };
+
     if (loading) {
         return <div className="settings-loading">로딩 중...</div>;
     }
@@ -160,24 +172,24 @@ export const SiteSettingsEditor = () => {
                         <h2>Hero 섹션</h2>
 
                         <div className="form-group">
-                            <label htmlFor="heroTitle">제목</label>
+                            <label htmlFor="heroTitle">메인 큰 제목 (홈 상단 굵은 글씨)</label>
                             <input
                                 id="heroTitle"
                                 type="text"
                                 value={settings.heroTitle}
                                 onChange={(e) => setSettings({ ...settings, heroTitle: e.target.value })}
-                                placeholder="재맞고 이용 안내"
+                                placeholder="긴 글, 이미지, 영상도 빠르게 찾고 편하게 읽으세요."
                                 className="form-input"
                             />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="heroDescription">설명</label>
+                            <label htmlFor="heroDescription">메인 설명 (큰 제목 아래 문장)</label>
                             <textarea
                                 id="heroDescription"
                                 value={settings.heroDescription}
                                 onChange={(e) => setSettings({ ...settings, heroDescription: e.target.value })}
-                                placeholder="재맞고와 함께라면..."
+                                placeholder="학생 사용자를 위해 탐색 속도와 가독성을 높였습니다..."
                                 className="form-textarea"
                                 rows={3}
                             />
@@ -203,6 +215,19 @@ export const SiteSettingsEditor = () => {
                                 placeholder="학생용 읽기 최적화 포인트"
                                 className="form-input"
                             />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="heroPanelItemsBulk">카드 항목 일괄 수정 (한 줄에 1개)</label>
+                            <textarea
+                                id="heroPanelItemsBulk"
+                                value={settings.heroPanelItems.join('\n')}
+                                onChange={(e) => updatePanelItemsBulk(e.target.value)}
+                                placeholder={`검색 + 카테고리 필터로 질문 접근 시간 단축\n한 번에 하나만 열리는 아코디언으로 집중도 유지\n긴 본문, 이미지, 영상 콘텐츠를 저피로 구조로 배치`}
+                                className="form-textarea"
+                                rows={4}
+                            />
+                            <p className="form-help">아래 개별 항목 입력칸과 같은 내용입니다. 편한 방식으로 수정하세요.</p>
                         </div>
 
                         {settings.heroPanelItems.map((item, index) => (

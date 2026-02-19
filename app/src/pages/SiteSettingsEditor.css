@@ -93,6 +93,12 @@
     margin-bottom: 8px;
 }
 
+.form-help {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
 .form-input,
 .form-textarea {
     width: 100%;
